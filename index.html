@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Craftsmanship & Data Art</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --glass: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.18);
+      --accent: 125 211 252;
+      --accent-2: 196 181 253;
+    }
+
+    * { cursor: none; }
+
+    body {
+      background: #04070b;
+      color: #f8fafc;
+      overflow-x: hidden;
+    }
+
+    canvas#bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.12"/></svg>');
+      mix-blend-mode: soft-light;
+      z-index: -1;
+    }
+
+    .glass {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .hero-title {
+      font-variation-settings: "wdth" 110, "wght" 700;
+      text-shadow: 0 0 60px rgba(56, 189, 248, 0.35);
+      letter-spacing: -0.02em;
+      transition: transform 0.4s ease;
+    }
+
+    .hero-title span {
+      display: inline-block;
+      transition: transform 0.5s ease;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .cursor {
+      position: fixed;
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(248, 250, 252, 0.7);
+      border-radius: 9999px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 50;
+      mix-blend-mode: difference;
+      transition: transform 0.12s ease, width 0.2s ease, height 0.2s ease;
+    }
+
+    .cursor-dot {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      background: rgba(148, 163, 184, 0.9);
+      border-radius: 9999px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    .hover-scale {
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    .hover-scale:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 30px 60px rgba(15, 23, 42, 0.45);
+    }
+
+    .image-zoom {
+      transition: transform 0.6s ease;
+    }
+
+    .showcase:hover .image-zoom {
+      transform: scale(1.08);
+    }
+
+    .slide-in {
+      transform: translateY(16px);
+      opacity: 0;
+      transition: transform 0.6s ease, opacity 0.6s ease;
+    }
+
+    .showcase:hover .slide-in {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .glow-line {
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(var(--accent), 0), rgba(var(--accent), 0.8), rgba(var(--accent-2), 0.8), rgba(var(--accent-2), 0));
+    }
+  </style>
+</head>
+<body class="font-sans">
+  <canvas id="bg"></canvas>
+  <div class="noise"></div>
+  <div class="cursor"></div>
+  <div class="cursor-dot"></div>
+
+  <header class="min-h-screen flex items-center justify-center px-6">
+    <div class="max-w-6xl mx-auto text-center space-y-10">
+      <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full glass text-xs uppercase tracking-[0.4em] text-slate-300">
+        Digital Craftsmanship & Data Art
+      </div>
+      <h1 class="hero-title text-5xl sm:text-7xl lg:text-[8rem] leading-none font-semibold">
+        <span class="hero-word">Data</span>
+        <span class="text-slate-500">/</span>
+        <span class="hero-word">AI</span>
+        <span class="text-slate-500">/</span>
+        <span class="hero-word">Web</span>
+      </h1>
+      <p class="max-w-3xl mx-auto text-slate-300 text-base sm:text-lg leading-relaxed reveal">
+        精緻なロジックとクラフトマンシップを融合し、データが詩的に流れる体験を設計します。視覚・構造・体験の全方位で“デジタルアート”を制作します。
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 reveal">
+        <button class="px-6 py-3 rounded-full glass text-sm uppercase tracking-[0.3em] hover:scale-105 transition">View Work</button>
+        <button class="px-6 py-3 rounded-full border border-slate-600 text-sm uppercase tracking-[0.3em] hover:border-slate-400 transition">Contact</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="relative z-10">
+    <section class="px-6 py-20">
+      <div class="max-w-6xl mx-auto space-y-10">
+        <div class="flex items-end justify-between">
+          <h2 class="text-3xl sm:text-4xl font-semibold">Logic & Creation</h2>
+          <span class="text-xs uppercase tracking-[0.3em] text-slate-500">Concept</span>
+        </div>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="glass p-6 rounded-3xl reveal hover-scale">
+            <p class="text-sm text-slate-400 uppercase tracking-[0.2em]">Statistics</p>
+            <h3 class="text-2xl font-semibold mt-4">統計</h3>
+            <p class="text-slate-300 mt-3 leading-relaxed">データの揺らぎを視覚言語に翻訳し、構造美として設計します。</p>
+          </div>
+          <div class="glass p-6 rounded-3xl reveal hover-scale">
+            <p class="text-sm text-slate-400 uppercase tracking-[0.2em]">Analysis</p>
+            <h3 class="text-2xl font-semibold mt-4">分析</h3>
+            <p class="text-slate-300 mt-3 leading-relaxed">複雑な情報を意味のある体験へ落とし込み、意思決定を加速。</p>
+          </div>
+          <div class="glass p-6 rounded-3xl reveal hover-scale">
+            <p class="text-sm text-slate-400 uppercase tracking-[0.2em]">Prototyping</p>
+            <h3 class="text-2xl font-semibold mt-4">試作</h3>
+            <p class="text-slate-300 mt-3 leading-relaxed">高速なプロトタイピングで未来の表現を検証し、磨き上げます。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-6 py-20">
+      <div class="max-w-6xl mx-auto space-y-10">
+        <div class="flex items-end justify-between">
+          <h2 class="text-3xl sm:text-4xl font-semibold">Featured Work</h2>
+          <span class="text-xs uppercase tracking-[0.3em] text-slate-500">Showcase</span>
+        </div>
+
+        <article class="showcase glass rounded-[2rem] overflow-hidden grid gap-6 lg:grid-cols-[1.2fr_1fr] hover-scale reveal">
+          <div class="relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/30 via-transparent to-purple-500/30"></div>
+            <img src="https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?auto=format&fit=crop&w=1600&q=80" alt="AI-Driven Web Architecture" class="image-zoom w-full h-full object-cover" />
+          </div>
+          <div class="p-8 lg:p-12 flex flex-col justify-between">
+            <div class="space-y-6">
+              <div class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-slate-400">
+                Project
+              </div>
+              <h3 class="text-3xl sm:text-4xl font-semibold">AI-Driven Web Architecture</h3>
+              <p class="text-slate-300 leading-relaxed">
+                「Usability First」。AIと人間の感性を融合し、体験価値を最適化した構造設計。
+              </p>
+              <div class="grid gap-4 text-sm text-slate-300">
+                <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                  <span>Tech Stack</span>
+                  <span class="text-slate-100">Claude Code / GitHub Copilot / JULES</span>
+                </div>
+                <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                  <span>Role</span>
+                  <span class="text-slate-100">Practical Implementation (Subcontract Work)</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-6 slide-in">
+              <a href="#" class="inline-flex items-center gap-2 text-sm uppercase tracking-[0.3em] text-cyan-200">
+                View Case Study
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+          <span class="glow-line"></span>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="px-6 py-16 border-t border-slate-800">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-8">
+      <div class="flex items-center gap-4 text-slate-400">
+        <a href="#" class="hover:text-slate-100 transition">Twitter</a>
+        <a href="#" class="hover:text-slate-100 transition">LinkedIn</a>
+        <a href="#" class="hover:text-slate-100 transition">GitHub</a>
+      </div>
+      <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Designed by AI &amp; Taisei</p>
+    </div>
+  </footer>
+
+  <script>
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    const state = {
+      particles: [],
+      w: 0,
+      h: 0,
+      mouse: { x: 0, y: 0 }
+    };
+
+    function resize() {
+      state.w = window.innerWidth;
+      state.h = window.innerHeight;
+      canvas.width = state.w * dpr;
+      canvas.height = state.h * dpr;
+      canvas.style.width = state.w + 'px';
+      canvas.style.height = state.h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      initParticles();
+    }
+
+    function initParticles() {
+      const count = Math.floor((state.w + state.h) / 18);
+      state.particles = Array.from({ length: count }, () => ({
+        x: Math.random() * state.w,
+        y: Math.random() * state.h,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        r: 1.2 + Math.random() * 2.4
+      }));
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, state.w, state.h);
+      ctx.fillStyle = '#05080d';
+      ctx.fillRect(0, 0, state.w, state.h);
+
+      for (const p of state.particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > state.w) p.vx *= -1;
+        if (p.y < 0 || p.y > state.h) p.vy *= -1;
+      }
+
+      for (let i = 0; i < state.particles.length; i++) {
+        const p = state.particles[i];
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(148, 163, 184, 0.8)';
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        for (let j = i + 1; j < state.particles.length; j++) {
+          const q = state.particles[j];
+          const dx = p.x - q.x;
+          const dy = p.y - q.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 140) {
+            ctx.strokeStyle = `rgba(56, 189, 248, ${0.15 - dist / 1000})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    const cursor = document.querySelector('.cursor');
+    const cursorDot = document.querySelector('.cursor-dot');
+
+    window.addEventListener('mousemove', (event) => {
+      const { clientX, clientY } = event;
+      state.mouse.x = clientX;
+      state.mouse.y = clientY;
+      cursor.style.transform = `translate(${clientX}px, ${clientY}px)`;
+      cursorDot.style.transform = `translate(${clientX}px, ${clientY}px)`;
+
+      document.querySelectorAll('.hero-word').forEach((word, index) => {
+        const offsetX = (clientX - window.innerWidth / 2) * 0.015 * (index + 1);
+        const offsetY = (clientY - window.innerHeight / 2) * 0.015 * (index + 1);
+        word.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+      });
+    });
+
+    document.querySelectorAll('a, button, .showcase').forEach((el) => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.width = '52px';
+        cursor.style.height = '52px';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.width = '28px';
+        cursor.style.height = '28px';
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+        }
+      });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+    resize();
+    draw();
+    window.addEventListener('resize', resize);
+  </script>
+</body>
+</html>
